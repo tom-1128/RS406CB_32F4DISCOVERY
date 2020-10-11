@@ -60,7 +60,7 @@ static void MX_USART2_UART_Init(void);
 
 /* USER CODE END 0 */
 
-unsigned char moji[]="0123456789ABCDEF";
+unsigned char moji[]="0123456789abcdef";
 unsigned char data2char(unsigned char c){
 	return moji[c];
 }
