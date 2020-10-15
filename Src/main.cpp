@@ -111,23 +111,63 @@ int main(void)
    HAL_UART_Transmit(&huart2, (uint8_t *)buf, sizeof(buf), 0xFFFF);
 
 
-   unsigned char sendbuf[9] = {0};
-   sendbuf[0]  = (unsigned char)0xFA;
-   sendbuf[1]  = (unsigned char)0xAF;
-   sendbuf[2]  = (unsigned char)0x01;
-   sendbuf[3]  = (unsigned char)0x00;
-   sendbuf[4]  = (unsigned char)0x24;
-   sendbuf[5]  = (unsigned char)0x01;
-   sendbuf[6]  = (unsigned char)0x01;
-   sendbuf[7]  = (unsigned char)0x01;//?????
+   unsigned char sendbuf_05[12] = {0};
+   sendbuf_05[0]  = (unsigned char)0xFA;
+   sendbuf_05[1]  = (unsigned char)0xAF;
+   sendbuf_05[2]  = (unsigned char)0x03;//03
+   sendbuf_05[3]  = (unsigned char)0x00;//00
+   sendbuf_05[4]  = (unsigned char)0x1E;//1E
+   sendbuf_05[5]  = (unsigned char)0x04;//04
+   sendbuf_05[6]  = (unsigned char)0x01;//01
+   sendbuf_05[7]  = (unsigned char)0x32;//32(0032-L)
+   sendbuf_05[8]  = (unsigned char)0x00;//00(0032-H)
+   sendbuf_05[9]  = (unsigned char)0xF4;//F4(01F4-L)
+   sendbuf_05[10]  = (unsigned char)0x01;//01(01F4-H)
 
-   unsigned char check_sum = sendbuf[2];
-   for( int i = 3; i < 8; i++ )
+   unsigned char check_sum = sendbuf_05[2];
+   for( int i = 3; i < 10; i++ )
    {
-   check_sum = (unsigned char)(check_sum ^ sendbuf[i]);
+   check_sum = (unsigned char)(check_sum ^ sendbuf_05[i]);
     }
-    sendbuf[8] = check_sum;
+   sendbuf_05[11] = check_sum;
 
+//    unsigned char sendbuf_90[12] = {0};
+//    sendbuf_90[0]  = (unsigned char)0xFA;
+//    sendbuf_90[1]  = (unsigned char)0xAF;
+//    sendbuf_90[2]  = (unsigned char)0x03;//03
+//    sendbuf_90[3]  = (unsigned char)0x00;//00
+//    sendbuf_90[4]  = (unsigned char)0x1E;//1E
+//    sendbuf_90[5]  = (unsigned char)0x04;//04
+//    sendbuf_90[6]  = (unsigned char)0x01;//01
+//    sendbuf_90[7]  = (unsigned char)0x84;//84(0384-L)
+//    sendbuf_90[8]  = (unsigned char)0x03;//03(0384-H)
+//    sendbuf_90[9]  = (unsigned char)0xF4;//F4(01F4-L)
+//    sendbuf_90[10]  = (unsigned char)0x01;//01(01F4-H)
+//
+//    check_sum = sendbuf_90[2];
+//    for( int i = 3; i < 10; i++ )
+//    {
+//    check_sum = (unsigned char)(check_sum ^ sendbuf_90[i]);
+//     }
+//    sendbuf_90[11] = check_sum;
+
+    unsigned char sendbuf_torque[9] = {0};
+    sendbuf_torque[0]  = (unsigned char)0xFA;
+    sendbuf_torque[1]  = (unsigned char)0xAF;
+    sendbuf_torque[2]  = (unsigned char)0x03;//03
+    sendbuf_torque[3]  = (unsigned char)0x00;//00
+    sendbuf_torque[4]  = (unsigned char)0x24;//1E
+    sendbuf_torque[5]  = (unsigned char)0x01;//01
+    sendbuf_torque[6]  = (unsigned char)0x01;//01
+    sendbuf_torque[7]  = (unsigned char)0x01;//01(torque)
+
+
+    check_sum = sendbuf_torque[2];
+    for( int i = 3; i < 8; i++ )
+    {
+    check_sum = (unsigned char)(check_sum ^ sendbuf_torque[i]);
+     }
+    sendbuf_torque[8] = check_sum;
   /* USER CODE END 2 */
  
  
@@ -136,14 +176,14 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  unsigned char buf[19]={0};
-	  for(int i=0 ; i<9 ; i++){
+	  unsigned char buf[23]={0};//文字変化用
+	  for(int i=0 ; i<=11 ; i++){//文字変化用
 //		  unsigned char datas[3];
 //		  datas=data2chars(sendbuf[i]);
-		  data2chars(sendbuf[i]);
+		  data2chars(sendbuf_05[i]);//文字変化用
 
-		  buf[i*2+0]=data[0];
-		  buf[i*2+1]=data[1];
+		  buf[i*2+0]=data[0];//文字変化用
+		  buf[i*2+1]=data[1];//文字変化用
 	  }
 	  {if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0)){ //ボタン状態取得
 	 	  HAL_UART_Transmit(&huart2, (uint8_t *)buf, 9*2, 0xFFFF);
